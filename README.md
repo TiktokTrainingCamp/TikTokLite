@@ -1,13 +1,13 @@
-# simple-demo
+# TikTokLite
 
-## 抖音项目服务端简单示例
+## 字节青训营项目
 
 具体功能内容参考飞书说明文档
 
 工程无其他依赖，直接编译运行即可
 
 ```shell
-go build && ./simple-demo
+go build && ./tiktok-lite
 ```
 
 ### 功能说明
