@@ -10,13 +10,47 @@
 go build && ./tiktok-lite
 ```
 
-### 功能说明
+## 接口说明/Controller
+视频上传后会保存到本地 public 目录中，访问时用 http://{ip}:8080/static/{video_name} 即可
 
-接口功能不完善，仅作为示例
+### 基础接口
+* 视频流 Feed ``/douyin/feed/`` 
+* 获取用户信息 UserInfo ``/douyin/user/`` 
+* 用户注册 Register ``/douyin/user/register/``
+* 用户登录 Login ``/douyin/user/login/``
+* 视频投稿 Publish ``/douyin/publish/action/``
+* 获取投稿信息 PublishList ``/douyin/publish/list/``
 
-* 用户登录数据保存在内存中，单次运行过程中有效
-* 视频上传后会保存到本地 public 目录中，访问时用 127.0.0.1:8080/static/video_name 即可
+### 点赞接口
+* 点赞操作 FavoriteAction ``/douyin/favorite/action/``
+* 点赞列表 FavoriteList ``/douyin/favorite/list/``
+* 评论操作 CommentAction ``/douyin/comment/action/``
+* 评论列表 CommentList ``/douyin/comment/list/``
 
-### 测试数据
+### 关注接口
+* 关注操作 RelationAction ``/douyin/relation/action/``
+* 关注列表 FollowList ``/douyin/relation/follow/list/``
+* 粉丝列表 FollowerList ``/douyin/relation/follower/list/``
 
-测试数据写在 demo_data.go 中，用于列表接口的 mock 测试
+## 功能说明/Service
+TODO 功能已实现，文档待补充
+### 基本功能
+TODO token生成算法
+### 点赞功能
+
+### 关注功能
+
+
+## 数据库设计/Dao
+
+### E-R图
+![](./public/ER图.png)
+
+### 数据库表鱼脚图
+![](./public/鱼脚图.png)
+
+## 性能和安全
+TODO sql注入和性能优化
+
+## 测试
+TODO 测试
