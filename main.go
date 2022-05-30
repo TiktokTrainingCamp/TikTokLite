@@ -36,7 +36,7 @@ func main() {
 	service.DEBUG = true
 	dao.DEBUG = false
 
-	//TODO 清除token
+	// 清除token
 	if success := service.ClearAllToken(); success {
 		fmt.Println("清除token")
 	}
