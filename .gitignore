@@ -22,6 +22,8 @@
 go.work
 
 # upload file
-public/
+*.mp4
+*.jpg
+*.avi
 
 .idea
