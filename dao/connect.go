@@ -64,6 +64,8 @@ func GetUserInfo(userId int) (User, bool) {
 	if DEBUG {
 		fmt.Println("dao.GetUserInfo")
 	}
+
+	//db = db.Debug()
 	var user User
 	result := db.Where(&User{UserId: userId}).Limit(1).Find(&user)
 	if result.Error != nil {
@@ -238,6 +240,47 @@ func RemoveFavorite(id int) bool {
 	return true
 }
 
+// GetFavoriteVideoList 获取用户点赞的视频列表
+func GetFavoriteVideoList(userId int) []Video {
+	if DEBUG {
+		fmt.Println("dao.GetFavoriteVideoList")
+	}
+	var videoList []Video
+	// 子查询
+	result := db.Where("video_id in (?)", db.Table("favorites").Select("video_id").Where(&Favorite{UserId: userId})).Find(&videoList)
+	if result.Error != nil {
+		fmt.Println("dao.GetFavoriteVideos", result.Error)
+		return []Video{}
+	}
+	return videoList
+}
+
+// GetFavoriteCountByVideoId 视频获赞数
+func GetFavoriteCountByVideoId(videoId int) int64 {
+	if DEBUG {
+		fmt.Println("dao.GetFavoriteCountByVideoId")
+	}
+	var count int64
+	result := db.Model(&Favorite{}).Where(&Favorite{VideoId: videoId}).Count(&count)
+	if result.Error != nil {
+		fmt.Println("dao.GetFavoriteCountByVideoId", result.Error)
+	}
+	return count
+}
+
+// GetFavoriteCountByUserId 用户获赞数
+func GetFavoriteCountByUserId(userId int) int64 {
+	if DEBUG {
+		fmt.Println("dao.GetFavoriteCountByUserId")
+	}
+	var count int64
+	result := db.Model(&Favorite{}).Where("video_id in (?)", db.Table("videos").Select("video_id").Where(&Video{UserId: userId})).Count(&count)
+	if result.Error != nil {
+		fmt.Println("dao.GetFavoriteCountByUserId", result.Error)
+	}
+	return count
+}
+
 // AddComment 添加评论
 func AddComment(userId int, videoId int, content string) (Comment, bool) {
 	if DEBUG {
@@ -292,30 +335,28 @@ func GetVideoCommentList(videoId int) []Comment {
 	return commentList
 }
 
-// GetFavoriteVideoList 获取用户点赞的视频列表
-func GetFavoriteVideoList(userId int) []Video {
+// GetCommentCountByVideoId 视频评论数
+func GetCommentCountByVideoId(videoId int) int64 {
 	if DEBUG {
-		fmt.Println("dao.GetFavoriteVideoList")
+		fmt.Println("dao.GetCommentCountByVideoId")
 	}
-	var videoList []Video
-	// 子查询
-	result := db.Where("video_id in (?)", db.Table("favorites").Select("video_id").Where(&Favorite{UserId: userId})).Find(&videoList)
+	var count int64
+	result := db.Model(&Comment{}).Where(&Comment{VideoId: videoId}).Count(&count)
 	if result.Error != nil {
-		fmt.Println("dao.GetFavoriteVideos", result.Error)
-		return []Video{}
+		fmt.Println("dao.GetCommentCountByVideoId", result.Error)
 	}
-	return videoList
+	return count
 }
 
 // GetRelation 判断是否关注
 func GetRelation(followId int, followerId int) int {
 	if DEBUG {
-		fmt.Println("dao.GetFavoriteVideos")
+		fmt.Println("dao.GetRelation")
 	}
 	var relation Relation
 	result := db.Where(&Relation{FollowId: followId, FollowerId: followerId}).Limit(1).Find(&relation)
 	if result.Error != nil {
-		fmt.Println("dao.GetFavoriteVideos", result.Error)
+		fmt.Println("dao.GetRelation", result.Error)
 	}
 	return relation.Id
 }
@@ -372,45 +413,6 @@ func GetFollowerCount(userId int) int64 {
 	return count
 }
 
-// GetLikedCountByVideoId 视频获赞数
-func GetLikedCountByVideoId(videoId int) int64 {
-	if DEBUG {
-		fmt.Println("dao.GetLikedCountByVideoId")
-	}
-	var count int64
-	result := db.Model(&Favorite{}).Where(&Favorite{VideoId: videoId}).Count(&count)
-	if result.Error != nil {
-		fmt.Println("dao.GetLikedCountByVideoId", result.Error)
-	}
-	return count
-}
-
-// GetCommentCountByVideoId 视频评论数
-func GetCommentCountByVideoId(videoId int) int64 {
-	if DEBUG {
-		fmt.Println("dao.GetCommentCountByVideoId")
-	}
-	var count int64
-	result := db.Model(&Comment{}).Where(&Comment{VideoId: videoId}).Count(&count)
-	if result.Error != nil {
-		fmt.Println("dao.GetCommentCountByVideoId", result.Error)
-	}
-	return count
-}
-
-// GetLikedCountByUserId 用户获赞数
-func GetLikedCountByUserId(userId int) int64 {
-	if DEBUG {
-		fmt.Println("dao.GetLikedCountByUserId")
-	}
-	var count int64
-	result := db.Model(&Favorite{}).Where("video_id in (?)", db.Table("videos").Select("video_id").Where(&Video{UserId: userId})).Count(&count)
-	if result.Error != nil {
-		fmt.Println("dao.GetLikedCountByUserId", result.Error)
-	}
-	return count
-}
-
 // GetFollowListById 获取关注列表
 func GetFollowListById(userId int) []User {
 	if DEBUG {
@@ -456,7 +458,7 @@ func TestConnect() {
 	//fmt.Println(GetFavorite(2, 8))
 	//fmt.Println(AddFavorite(3, 1))
 	//fmt.Println(RemoveFavorite(4))
-	//fmt.Println(AddComment(2, 1, "毛子狂喜"))
+	//fmt.Println(AddComment(2, 1, "测试评论"))
 	//fmt.Println(GetVideoCommentList(1))
 	//fmt.Println(GetFavoriteVideoList(4))
 	//fmt.Println(AddRelation(3, 4))
