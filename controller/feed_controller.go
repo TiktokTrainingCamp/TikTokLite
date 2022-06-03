@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"tiktok-lite/common"
 	"tiktok-lite/service"
 	"time"
@@ -16,7 +18,14 @@ type FeedResponse struct {
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
-	latestTime := c.Query("latest_time")
+	latestTime, err := strconv.Atoi(c.Query("latest_time"))
+	if err != nil {
+		c.JSON(http.StatusOK, UserResponse{
+			Response: common.Response{StatusCode: 1, StatusMsg: "latest_time parse failed"},
+		})
+		return
+	}
+	fmt.Printf("lasest_time:%d\n", latestTime)
 	token := c.Query("token")
 
 	var videoList []common.Video
@@ -39,6 +48,6 @@ func Feed(c *gin.Context) {
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  common.Response{StatusCode: 0},
 		VideoList: videoList,
-		NextTime:  beforeTime,
+		NextTime:  int64(beforeTime),
 	})
 }
