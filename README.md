@@ -49,13 +49,16 @@ TODO token生成算法
 ### 数据库表鱼脚图
 ![](./public/鱼脚图.png)
 
+## 性能和安全
+
 ### sql优化
 使用Explain可以查看sql的性能瓶颈信息，并根据结果进行sql的相关优化。在select 语句前加上explain关键字，执行的时候并不会真正执行sql语句，而是返回sql查询语句对应的执行计划信息。
 ![img.png](public/img.png)
 其中type字段决定mysql如何查找表中的数据，查找数据记录的大概范围。从最优到最差分别为system > const > eq_ref > ref > range > index > all。
 all表示全表扫描，性能最差，可以通过增加索引来优化，一般优化到range就可以了。
-## 性能和安全
-TODO sql注入和性能优化
+
+### sql注入
+TODO
 
 ## 测试
 TODO 测试
