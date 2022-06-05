@@ -2,22 +2,13 @@ package service
 
 import (
 	"fmt"
-	"strconv"
 	"tiktok-lite/common"
 	"tiktok-lite/dao"
+	"tiktok-lite/util"
 )
 
 var DEBUG = true
-
-// generateToken 生成token
-func generateToken(username string, password string) string {
-	if dao.DEBUG {
-		fmt.Println("service.generateToken")
-	}
-
-	//TODO 实现token算法
-	return username + strconv.Itoa(len(username)) + password + strconv.Itoa(len(password))
-}
+var key = "ThisIsPrivateKey"
 
 // convertUser 将dao.User转为common.User
 func convertUser(userInfo dao.User, userId int) common.User {
@@ -47,12 +38,33 @@ func convertUserList(users []dao.User, userId int) []common.User {
 	return userList
 }
 
+// generateToken 生成token
+func generateToken(userId int, username string) (string, bool) {
+	if dao.DEBUG {
+		fmt.Println("service.generateToken")
+	}
+
+	//实现token算法
+	token, success := util.GenerateToken(userId, key)
+	return token, success
+}
+
 // ValidateToken 验证token
 func ValidateToken(token string) (int, bool) {
 	if DEBUG {
 		fmt.Println("service.ValidateToken")
 	}
 
+	var (
+		userId  int
+		success bool
+	)
+	// 解析token
+	_, success = util.ParseToken(token, key)
+	if !success {
+		fmt.Println("token解析失败")
+		return 0, false
+	}
 	// 查询token
 	userId, tokenInfo := dao.GetToken(token)
 	if userId == 0 {
@@ -60,7 +72,7 @@ func ValidateToken(token string) (int, bool) {
 		return 0, false
 	}
 	// 更新token
-	success := dao.RefreshToken(tokenInfo)
+	success = dao.RefreshToken(tokenInfo)
 	if !success {
 		return 0, false
 	}
@@ -93,8 +105,9 @@ func UserRegister(username string, password string) (int, string, bool) {
 	}
 
 	var (
-		userId int
-		token  string
+		userId  int
+		token   string
+		success bool
 	)
 	// 添加用户
 	userId = dao.AddUser(username, username, password)
@@ -102,9 +115,12 @@ func UserRegister(username string, password string) (int, string, bool) {
 		return userId, token, false
 	}
 	// 生成token
-	token = generateToken(username, password)
+	token, success = generateToken(userId, username)
+	if !success {
+		return userId, token, false
+	}
 	// 添加token
-	success := dao.AddToken(userId, token)
+	success = dao.AddToken(userId, token)
 	if !success {
 		return userId, token, false
 	}
@@ -118,8 +134,9 @@ func UserLogin(username string, password string) (int, string, bool) {
 	}
 
 	var (
-		userId int
-		token  string
+		userId  int
+		token   string
+		success bool
 	)
 	// 验证账号密码
 	userId = dao.ValidateUser(username, password)
@@ -127,9 +144,12 @@ func UserLogin(username string, password string) (int, string, bool) {
 		return userId, token, false
 	}
 	// 生成token
-	token = generateToken(username, password)
+	token, success = generateToken(userId, username)
+	if !success {
+		return userId, token, false
+	}
 	// 添加token
-	success := dao.AddToken(userId, token)
+	success = dao.AddToken(userId, token)
 	if !success {
 		return userId, token, false
 	}
