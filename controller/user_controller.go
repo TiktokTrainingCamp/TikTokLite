@@ -29,7 +29,7 @@ func Register(c *gin.Context) {
 		})
 	} else {
 		userId, token, success := service.UserRegister(username, password)
-		fmt.Println("注册成功")
+		fmt.Println("注册")
 		if success {
 			c.JSON(http.StatusOK, UserLoginResponse{
 				Response: common.Response{StatusCode: 0},
