@@ -33,6 +33,7 @@ func FindUser(username string) bool {
 }
 
 // ValidateUser 验证用户
+// discarded
 func ValidateUser(username string, password string) int {
 	if DEBUG {
 		fmt.Println("dao.ValidateUser")
@@ -43,6 +44,19 @@ func ValidateUser(username string, password string) int {
 		fmt.Println("dao.ValidateUser", result.Error)
 	}
 	return userInfo.UserId
+}
+
+// GetPasswordByUsername 获取用户存储密码
+func GetPasswordByUsername(username string) (int, string) {
+	if DEBUG {
+		fmt.Println("dao.GetPasswordByUsername")
+	}
+	var userInfo User
+	result := db.Where(&User{Username: username}).Limit(1).Find(&userInfo)
+	if result.Error != nil {
+		fmt.Println("dao.ValidateUser", result.Error)
+	}
+	return userInfo.UserId, userInfo.Password
 }
 
 // AddUser 添加用户

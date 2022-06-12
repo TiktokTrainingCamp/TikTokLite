@@ -109,6 +109,11 @@ func UserRegister(username string, password string) (int, string, bool) {
 		token   string
 		success bool
 	)
+	// 加密密码
+	password, err := util.HashAndSalt(password)
+	if err != nil {
+		return userId, token, false
+	}
 	// 添加用户
 	userId = dao.AddUser(username, username, password)
 	if userId == 0 {
@@ -139,10 +144,15 @@ func UserLogin(username string, password string) (int, string, bool) {
 		success bool
 	)
 	// 验证账号密码
-	userId = dao.ValidateUser(username, password)
+	userId, encrpPassword := dao.GetPasswordByUsername(username)
 	if userId == 0 {
 		return userId, token, false
 	}
+	success = util.ComparePasswords(encrpPassword, password)
+	if !success {
+		return userId, token, false
+	}
+	//userId = dao.ValidateUser(username, password)
 	// 生成token
 	token, success = generateToken(userId, username)
 	if !success {

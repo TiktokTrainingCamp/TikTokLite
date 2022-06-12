@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"os/exec"
 	"strings"
 	"time"
@@ -144,4 +145,26 @@ func ParseToken(token string, keyString string) (string, bool) {
 	}
 	plainText := fmt.Sprintf("%s", plain)
 	return plainText, strings.Contains(plainText, ".")
+}
+
+// HashAndSalt 注册加密密码
+func HashAndSalt(pwdStr string) (pwdHash string, err error) {
+	pwd := []byte(pwdStr)
+	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.MinCost)
+	if err != nil {
+		return
+	}
+	pwdHash = string(hash)
+	return
+}
+
+// ComparePasswords 登录验证密码
+func ComparePasswords(hashedPwd string, plainPwd string) bool {
+	byteHash := []byte(hashedPwd)
+	bytePwd := []byte(plainPwd)
+	err := bcrypt.CompareHashAndPassword(byteHash, bytePwd)
+	if err != nil {
+		return false
+	}
+	return true
 }
