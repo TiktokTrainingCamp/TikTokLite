@@ -13,7 +13,7 @@ go build && ./tiktok-lite
 ```
 
 ### 2 前端
-安装[抖声apk](https://bytedance.feishu.cn/docx/doxcnZd1RWr6Wpd1WVfntGabCFg)，与后端在同一局域网下，双击右下角的 “我” 可以 打开高级设置，并将后端输出的ip拼接成``http://{ip}:8080``填入baseurl，保存并重启，即可连接服务端。
+安装[抖声apk](https://bytedance.feishu.cn/docx/doxcnZd1RWr6Wpd1WVfntGabCFg)，与后端在同一局域网下，双击右下角的 “我” 可以 打开高级设置，并将后端输出的ip拼接成``http://{ip}:8080/``填入baseurl，保存并重启，即可连接服务端。
 
 ### 3 数据库
 mysql导入[sql语句](sql/tiktok_index.sql)并配置端口为localhost:3306。
@@ -93,6 +93,9 @@ token是唯一并带含有userId和创建时间的一串加密字符，失效时
 1. 客户端发起Prepare命令将带“?”参数占位符的SQL语句发送到数据库,成功后返回stmtID。
 2. 具体执行SQL时,客户端使用之前返回的stmtID,并带上请求参数发起Execute命令来执行SQL。
 3. 不再需要Prepare的语句时,关闭stmtID对应的Prepare语句。
+
+经过sqlmap工具检测，没有sql注入漏洞。
+![](public/sql注入.png)
 
 ### 3 越权风险
 所有通过用户id获取用户信息的接口都在dao层，无法直接调用，只能由service层调用，而service层的userId都是通过token来获取，在token唯一且加密的情况下，用户无法通过调用获取其他用户的信息；所有操作都会验证用户的token来获取用户id，并校验用户的操作合法性，防止用户非法篡改/删除不属于该用户的数据。因此不存在横向越权风险。
