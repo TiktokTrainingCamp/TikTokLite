@@ -18,12 +18,21 @@ type FeedResponse struct {
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
-	latestTime, err := strconv.Atoi(c.Query("latest_time"))
-	if err != nil {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: common.Response{StatusCode: 1, StatusMsg: "latest_time parse failed"},
-		})
-		return
+	latestTimeString := c.Query("latest_time")
+	var (
+		latestTime int
+		err        error
+	)
+	if latestTimeString == "" {
+		latestTime = int(time.Now().Unix() * 1000)
+	} else {
+		latestTime, err = strconv.Atoi(latestTimeString)
+		if err != nil {
+			c.JSON(http.StatusOK, UserResponse{
+				Response: common.Response{StatusCode: 1, StatusMsg: "latest_time parse failed"},
+			})
+			return
+		}
 	}
 	fmt.Printf("lasest_time:%d\n", latestTime)
 	token := c.Query("token")
