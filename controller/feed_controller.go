@@ -53,10 +53,11 @@ func Feed(c *gin.Context) {
 	} else { // 非登录状态
 		videoList, beforeTime = service.GetFeedVideoList(latestTime)
 	}
+	fmt.Printf("earliest_time:%d\n", latestTime)
 
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  common.Response{StatusCode: 0},
 		VideoList: videoList,
-		NextTime:  int64(beforeTime),
+		NextTime:  beforeTime,
 	})
 }
