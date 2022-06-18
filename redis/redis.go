@@ -10,7 +10,7 @@ import (
 
 var rdb *redis.Client
 
-var expireTime = 10 * time.Minute
+var ExpireTime = 10 * time.Minute
 
 //InitRedisClient 初始化redis连接
 func InitRedisClient() (err error) {
@@ -33,11 +33,11 @@ func SetToken(token string, userId int) (err error) {
 	if dao.DEBUG {
 		fmt.Println("redis.SetToken")
 	}
-	err = rdb.Set(token, userId, expireTime).Err()
+	err = rdb.Set(token, userId, ExpireTime).Err()
 	if err != nil {
 		return err
 	}
-	fmt.Println("添加数据：", token)
+	fmt.Println("添加/更新数据：", token)
 	return nil
 }
 
