@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"tiktok-lite/common"
 	"tiktok-lite/dao"
+	"tiktok-lite/redis"
 	"tiktok-lite/util"
 )
 
@@ -39,7 +40,7 @@ func convertUserList(users []dao.User, userId int) []common.User {
 }
 
 // generateToken 生成token
-func generateToken(userId int, username string) (string, bool) {
+func generateToken(userId int) (string, bool) {
 	if dao.DEBUG {
 		fmt.Println("service.generateToken")
 	}
@@ -60,33 +61,31 @@ func ValidateToken(token string) (int, bool) {
 		success bool
 	)
 	// 解析token
+	if token == "" {
+		return userId, false
+	}
 	_, success = util.ParseToken(token, key)
 	if !success {
-		fmt.Println("token解析失败")
 		return 0, false
 	}
 	// 查询token
-	userId, tokenInfo := dao.GetToken(token)
-	if userId == 0 {
+	userId, err := redis.GetToken(token)
+	if userId <= 0 || err != nil {
 		fmt.Println("token已过期")
-		return 0, false
-	}
-	// 更新token
-	success = dao.RefreshToken(tokenInfo)
-	if !success {
 		return 0, false
 	}
 	return userId, true
 }
 
 // ClearAllToken 清除token信息
-func ClearAllToken() bool {
-	if DEBUG {
-		fmt.Println("service.ClearAllToken")
-	}
-
-	return dao.ClearToken()
-}
+// Discarded method
+//func ClearAllToken() bool {
+//	if DEBUG {
+//		fmt.Println("service.ClearAllToken")
+//	}
+//
+//	return dao.ClearToken()
+//}
 
 // UserExist 判断用户是否存在
 func UserExist(username string) bool {
@@ -120,13 +119,13 @@ func UserRegister(username string, password string) (int, string, bool) {
 		return userId, token, false
 	}
 	// 生成token
-	token, success = generateToken(userId, username)
+	token, success = generateToken(userId)
 	if !success {
 		return userId, token, false
 	}
 	// 添加token
-	success = dao.AddToken(userId, token)
-	if !success {
+	err = redis.SetToken(token, userId)
+	if err != nil {
 		return userId, token, false
 	}
 	return userId, token, true
@@ -154,13 +153,13 @@ func UserLogin(username string, password string) (int, string, bool) {
 	}
 	//userId = dao.ValidateUser(username, password)
 	// 生成token
-	token, success = generateToken(userId, username)
+	token, success = generateToken(userId)
 	if !success {
 		return userId, token, false
 	}
 	// 添加token
-	success = dao.AddToken(userId, token)
-	if !success {
+	err := redis.SetToken(token, userId)
+	if err != nil {
 		return userId, token, false
 	}
 	return userId, token, true

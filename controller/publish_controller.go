@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"tiktok-lite/common"
+	"tiktok-lite/object"
 	"tiktok-lite/service"
 	"tiktok-lite/util"
 	"time"
@@ -17,7 +19,7 @@ type VideoListResponse struct {
 	VideoList []common.Video `json:"video_list"`
 }
 
-var IP = "10.11.31.123:8080" // 服务器ip,服务器启动时会由main函数修改
+var IP string // 服务器ip,服务器启动时会由main函数修改
 
 // Publish 投稿视频
 func Publish(c *gin.Context) {
@@ -45,9 +47,9 @@ func Publish(c *gin.Context) {
 
 	// 将视频保存到服务器
 	filename := filepath.Base(data.Filename)
-	finalName := fmt.Sprintf("%d_%s_%s", userId, time.Now().Format("2006-01-02-15-04-05"), filename)
-	fmt.Println("filename", finalName)
-	saveFile := filepath.Join("./public/", finalName)
+	videoName := fmt.Sprintf("%d_%s_%s", userId, time.Now().Format("2006-01-02-15-04-05"), filename)
+	fmt.Println("视频文件名：", videoName)
+	saveFile := filepath.Join("./public/", videoName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
@@ -57,26 +59,54 @@ func Publish(c *gin.Context) {
 	}
 
 	// 保存预览图片
-	imageName, err := util.GeneratePreview(finalName)
+	suffix := ".jpg"
+	imageName := strings.Split(videoName, ".")[0] + suffix
+	err = util.GeneratePreview(videoName, imageName)
 	if err != nil {
 		fmt.Println("生成封面：", err.Error())
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 1,
+			StatusMsg:  "保存视频：" + err.Error(),
+		})
+		return
 	}
+
+	// 上传到云存储服务器
+	coverUrl, err := object.UploadImgFile(imageName)
+	if err != nil {
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 1,
+			StatusMsg:  "对象云存储：" + err.Error(),
+		})
+		return
+	}
+	playUrl, err := object.UploadVideoFile(videoName)
+	if err != nil {
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 1,
+			StatusMsg:  "对象云存储：" + err.Error(),
+		})
+		return
+	}
+	// 本地路径
+	//playUrl := "http://" + IP + "/static/" + finalName
+	//coverUrl := "http://" + IP + "/static/" + imageName
 
 	// 添加视频
 	title := c.PostForm("title")
-	playUrl := "http://" + IP + "/static/" + finalName
-	coverUrl := "http://" + IP + "/static/" + imageName
 	success = service.AddVideoInfo(userId, playUrl, coverUrl, title)
 	if !success {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
-			StatusMsg:  finalName + "Uploaded fail",
+			StatusMsg:  videoName + "Uploaded fail",
 		})
+		return
 	} else {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 0,
 			StatusMsg:  "Uploaded successfully",
 		})
+		return
 	}
 }
 
@@ -97,6 +127,7 @@ func PublishList(c *gin.Context) {
 		c.JSON(http.StatusOK, UserResponse{
 			Response: common.Response{StatusCode: 1, StatusMsg: "user_id parse failed"},
 		})
+		return
 	}
 
 	videoList := service.GetVideoListById(userId)

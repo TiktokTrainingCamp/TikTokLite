@@ -14,6 +14,8 @@ func convertVideoList(videos []dao.Video, userId int) []common.Video {
 	}
 
 	var videoList []common.Video
+	DEBUG = false
+	// 逐个获取视频的相关信息
 	for _, v := range videos {
 		user, _ := GetUserInfoById(v.UserId, userId)
 		favoriteCount := dao.GetFavoriteCountByVideoId(v.VideoId)
@@ -22,6 +24,7 @@ func convertVideoList(videos []dao.Video, userId int) []common.Video {
 		video := common.Video{Id: int64(v.VideoId), Author: user, PlayUrl: v.PlayUrl, CoverUrl: v.CoverUrl, FavoriteCount: favoriteCount, CommentCount: commentCount, IsFavorite: isFavorite, Title: v.Title}
 		videoList = append(videoList, video)
 	}
+	DEBUG = true
 	return videoList
 }
 
@@ -41,7 +44,13 @@ func GetFeedVideoList(latestTime int) ([]common.Video, int64) {
 
 	// 获取feed流视频
 	videos := dao.GetFeedVideoList(beforeTime)
-	fmt.Printf("Feed流：获取到%d个视频,%v\n", len(videos), videos)
+
+	if DEBUG {
+		fmt.Printf("Feed流：视频数量:%d\n", len(videos))
+	}
+	if dao.DEBUG {
+		fmt.Printf("视频详细信息：%v\n", videos)
+	}
 	if len(videos) == 0 {
 		return videoList, time.Now().Unix()
 	}
@@ -98,11 +107,17 @@ func GetVideoListById(userId int) []common.Video {
 	var videoList []common.Video
 	// 获取登录feed流
 	videos := dao.GetVideoListById(userId)
-	fmt.Printf("登录Feed流：%v\n", videos)
+
 	if len(videos) == 0 {
 		return videoList
 	}
 	// 将dao.Video转成common.Video
 	videoList = convertVideoList(videos, -1)
+	if DEBUG {
+		fmt.Printf("用户%d投稿列表 数量:%d\n", userId, len(videoList))
+	}
+	if dao.DEBUG {
+		fmt.Printf("视频详细信息：%v\n", videoList)
+	}
 	return videoList
 }

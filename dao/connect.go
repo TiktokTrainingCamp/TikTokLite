@@ -7,17 +7,17 @@ import (
 	"time"
 )
 
-var tokenValidDuration, _ = time.ParseDuration("10m")
-var db = getDB()
+var db *gorm.DB
 var DEBUG = false
 
-func getDB() *gorm.DB {
+// ConnectDB 连接mysql数据库
+func ConnectDB() (err error) {
 	dsn := "root:zjj1028xym@tcp(127.0.0.1:3306)/tiktok?charset=utf8&parseTime=True&loc=Local"
-	database, err := gorm.Open(mysql.Open(dsn))
+	db, err = gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		fmt.Println(err)
 	}
-	return database
+	return
 }
 
 // FindUser 查找用户
@@ -33,18 +33,18 @@ func FindUser(username string) bool {
 }
 
 // ValidateUser 验证用户
-// discarded
-func ValidateUser(username string, password string) int {
-	if DEBUG {
-		fmt.Println("dao.ValidateUser")
-	}
-	var userInfo User
-	result := db.Where(&User{Username: username, Password: password}).Limit(1).Find(&userInfo)
-	if result.Error != nil {
-		fmt.Println("dao.ValidateUser", result.Error)
-	}
-	return userInfo.UserId
-}
+// Discarded method
+//func ValidateUser(username string, password string) int {
+//	if DEBUG {
+//		fmt.Println("dao.ValidateUser")
+//	}
+//	var userInfo User
+//	result := db.Where(&User{Username: username, Password: password}).Limit(1).Find(&userInfo)
+//	if result.Error != nil {
+//		fmt.Println("dao.ValidateUser", result.Error)
+//	}
+//	return userInfo.UserId
+//}
 
 // GetPasswordByUsername 获取用户存储密码
 func GetPasswordByUsername(username string) (int, string) {
@@ -90,73 +90,78 @@ func GetUserInfo(userId int) (User, bool) {
 }
 
 // GetToken 查找token
-func GetToken(userToken string) (int, Token) {
-	if DEBUG {
-		fmt.Println("dao.GetToken")
-	}
-	var tokenInfo Token
-	now := time.Now()
-	result := db.Where(&Token{UserToken: userToken}).Where("expire_time > ?", now).Limit(1).Find(&tokenInfo)
-	if result.Error != nil {
-		fmt.Println("dao.GetToken", result.Error)
-	}
-	return tokenInfo.UserId, tokenInfo
-}
+// Discarded method
+//func GetToken(userToken string) (int, Token) {
+//	if DEBUG {
+//		fmt.Println("dao.GetToken")
+//	}
+//	var tokenInfo Token
+//	now := time.Now()
+//	result := db.Where(&Token{UserToken: userToken}).Where("expire_time > ?", now).Limit(1).Find(&tokenInfo)
+//	if result.Error != nil {
+//		fmt.Println("dao.GetToken", result.Error)
+//	}
+//	return tokenInfo.UserId, tokenInfo
+//}
 
 // AddToken 添加token
-func AddToken(userId int, userToken string) bool {
-	if DEBUG {
-		fmt.Println("dao.AddToken")
-	}
-	expireTime := time.Now().Add(tokenValidDuration) // token的失效时间是现在的时间后延十分钟
-	var tokenInfo = Token{UserToken: userToken, UserId: userId, ExpireTime: expireTime}
-	result := db.Create(&tokenInfo)
-	if result.Error != nil {
-		fmt.Println("dao.AddToken", result.Error)
-		return false
-	}
-	return true
-}
+// Discarded method
+//func AddToken(userId int, userToken string) bool {
+//	if DEBUG {
+//		fmt.Println("dao.AddToken")
+//	}
+//	expireTime := time.Now().Add(tokenValidDuration) // token的失效时间是现在的时间后延十分钟
+//	var tokenInfo = Token{UserToken: userToken, UserId: userId, ExpireTime: expireTime}
+//	result := db.Create(&tokenInfo)
+//	if result.Error != nil {
+//		fmt.Println("dao.AddToken", result.Error)
+//		return false
+//	}
+//	return true
+//}
 
 // RemoveToken 删除指定token
-func RemoveToken(tokenId int) bool {
-	if DEBUG {
-		fmt.Println("dao.RemoveToken")
-	}
-	result := db.Delete(&Token{}, tokenId)
-	if result.Error != nil {
-		fmt.Println("dao.RemoveToken", result.Error)
-		return false
-	}
-	return true
-}
+// Discarded method
+//func RemoveToken(tokenId int) bool {
+//	if DEBUG {
+//		fmt.Println("dao.RemoveToken")
+//	}
+//	result := db.Delete(&Token{}, tokenId)
+//	if result.Error != nil {
+//		fmt.Println("dao.RemoveToken", result.Error)
+//		return false
+//	}
+//	return true
+//}
 
 // ClearToken 删除所有token
-func ClearToken() bool {
-	if DEBUG {
-		fmt.Println("dao.ClearToken")
-	}
-	result := db.Where("1 = 1").Delete(&Token{})
-	if result.Error != nil {
-		fmt.Println("dao.ClearToken", result.Error)
-		return false
-	}
-	return true
-}
+// Discarded method
+//func ClearToken() bool {
+//	if DEBUG {
+//		fmt.Println("dao.ClearToken")
+//	}
+//	result := db.Where("1 = 1").Delete(&Token{})
+//	if result.Error != nil {
+//		fmt.Println("dao.ClearToken", result.Error)
+//		return false
+//	}
+//	return true
+//}
 
 // RefreshToken 更新token
-func RefreshToken(tokenInfo Token) bool {
-	if DEBUG {
-		fmt.Println("dao.RefreshToken")
-	}
-	tokenInfo.ExpireTime = time.Now().Add(tokenValidDuration) // token的失效时间是现在的时间后延十分钟
-	result := db.Save(&tokenInfo)
-	if result.Error != nil {
-		fmt.Println("dao.RefreshToken", result.Error)
-		return false
-	}
-	return true
-}
+// Discarded method
+//func RefreshToken(tokenInfo Token) bool {
+//	if DEBUG {
+//		fmt.Println("dao.RefreshToken")
+//	}
+//	tokenInfo.ExpireTime = time.Now().Add(tokenValidDuration) // token的失效时间是现在的时间后延十分钟
+//	result := db.Save(&tokenInfo)
+//	if result.Error != nil {
+//		fmt.Println("dao.RefreshToken", result.Error)
+//		return false
+//	}
+//	return true
+//}
 
 // GetFeedVideoList 获取feed流(按时间倒序)
 // 上传时间早于给定时间
@@ -165,7 +170,7 @@ func GetFeedVideoList(latestTime time.Time) []Video {
 		fmt.Println("dao.GetFeedVideoList")
 	}
 	var videoList []Video
-	result := db.Where("update_time < ?", latestTime).Order("update_time desc").Limit(3).Find(&videoList)
+	result := db.Where("update_time < ?", latestTime).Order("update_time desc").Limit(5).Find(&videoList)
 	if result.Error != nil {
 		fmt.Println("dao.GetFeedVideoList", result.Error)
 		return []Video{}
@@ -180,7 +185,7 @@ func GetFeedVideoListLogin(userId int, latestTime time.Time) []Video {
 		fmt.Println("dao.GetFeedVideoListLogin")
 	}
 	var videoList []Video
-	result := db.Where("user_id <> ?", userId).Where("update_time < ?", latestTime).Order("update_time desc").Find(&videoList)
+	result := db.Where("user_id <> ?", userId).Where("update_time < ?", latestTime).Order("update_time desc").Limit(5).Find(&videoList)
 	if result.Error != nil {
 		fmt.Println("dao.GetFeedVideoListLogin", result.Error)
 		return []Video{}
@@ -451,39 +456,4 @@ func GetFollowerListById(userId int) []User {
 		fmt.Println("dao.GetFollowerListById", result.Error)
 	}
 	return followerList
-}
-
-// TestConnect 测试上述dao接口
-func TestConnect() {
-	//db := getDB()
-	//fmt.Println(GetUser("ColorOfNight1"))
-	//fmt.Println(ValidateUser("admin", "123456"))
-	//fmt.Println(AddUser("test", "test", "123456"))
-	//fmt.Println(AddToken(1, "admin123456"))
-	//fmt.Println(RemoveToken(2))
-	//userId, token := GetToken("admin123456")
-	//fmt.Println(userId, token)
-	//fmt.Println(RefreshToken(token))
-	//fmt.Println(GetFeedVideoList())
-	//mm, _ := time.ParseDuration("-35h")
-	fmt.Println(GetFeedVideoListLogin(1, time.Unix(int64(1653660143), 0)))
-	//fmt.Println(GetVideoListById(1))
-	//fmt.Println(AddVideo(1, "test url", "test url"))
-	//fmt.Println(GetFavorite(2, 8))
-	//fmt.Println(AddFavorite(3, 1))
-	//fmt.Println(RemoveFavorite(4))
-	//fmt.Println(AddComment(2, 1, "测试评论"))
-	//fmt.Println(GetVideoCommentList(1))
-	//fmt.Println(GetFavoriteVideoList(4))
-	//fmt.Println(AddRelation(3, 4))
-	//fmt.Println(GetRelation(3, 4))
-	//fmt.Println(RemoveRelation(4))
-	//fmt.Println(GetFollowCount(2))
-	//fmt.Println(GetFollowerCount(1))
-	//fmt.Println(GetLikedCountByVideoId(8))
-	//fmt.Println(GetCommentCountByVideoId(8))
-	//fmt.Println(GetLikedCountByUserId(1))
-	//fmt.Println(GetFollowListById(2))
-	//fmt.Println(GetFollowerListById(1))
-
 }
