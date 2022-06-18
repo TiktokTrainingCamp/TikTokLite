@@ -14,6 +14,7 @@ func convertVideoList(videos []dao.Video, userId int) []common.Video {
 	}
 
 	var videoList []common.Video
+	DEBUG = false
 	for _, v := range videos {
 		user, _ := GetUserInfoById(v.UserId, userId)
 		favoriteCount := dao.GetFavoriteCountByVideoId(v.VideoId)
@@ -22,6 +23,7 @@ func convertVideoList(videos []dao.Video, userId int) []common.Video {
 		video := common.Video{Id: int64(v.VideoId), Author: user, PlayUrl: v.PlayUrl, CoverUrl: v.CoverUrl, FavoriteCount: favoriteCount, CommentCount: commentCount, IsFavorite: isFavorite, Title: v.Title}
 		videoList = append(videoList, video)
 	}
+	DEBUG = true
 	return videoList
 }
 
