@@ -82,7 +82,7 @@ func GetUserInfo(userId int) (User, bool) {
 	//db = db.Debug()
 	var user User
 	result := db.Where(&User{UserId: userId}).Limit(1).Find(&user)
-	if result.Error != nil {
+	if result.Error != nil || user.UserId <= 0 {
 		fmt.Println("dao.GetUserInfo", result.Error)
 		return user, false
 	}
