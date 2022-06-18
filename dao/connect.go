@@ -185,7 +185,7 @@ func GetFeedVideoListLogin(userId int, latestTime time.Time) []Video {
 		fmt.Println("dao.GetFeedVideoListLogin")
 	}
 	var videoList []Video
-	result := db.Where("user_id <> ?", userId).Where("update_time < ?", latestTime).Order("update_time desc").Find(&videoList)
+	result := db.Where("user_id <> ?", userId).Where("update_time < ?", latestTime).Order("update_time desc").Limit(3).Find(&videoList)
 	if result.Error != nil {
 		fmt.Println("dao.GetFeedVideoListLogin", result.Error)
 		return []Video{}
