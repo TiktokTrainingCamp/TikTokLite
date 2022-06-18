@@ -100,7 +100,7 @@ func GetVideoListById(userId int) []common.Video {
 	var videoList []common.Video
 	// 获取登录feed流
 	videos := dao.GetVideoListById(userId)
-	fmt.Printf("登录Feed流：%v\n", videos)
+	fmt.Printf("用户%d投稿列表：%v\n", userId, videos)
 	if len(videos) == 0 {
 		return videoList
 	}

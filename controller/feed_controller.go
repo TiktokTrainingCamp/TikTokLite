@@ -34,7 +34,6 @@ func Feed(c *gin.Context) {
 			return
 		}
 	}
-	fmt.Printf("lasest_time:%d\n", latestTime)
 	token := c.Query("token")
 
 	var videoList []common.Video
@@ -53,7 +52,8 @@ func Feed(c *gin.Context) {
 	} else { // 非登录状态
 		videoList, beforeTime = service.GetFeedVideoList(latestTime)
 	}
-	fmt.Printf("earliest_time:%d\n", latestTime)
+	fmt.Printf("lasest_time:%d\n", latestTime)
+	fmt.Printf("earliest_time:%d\n", beforeTime)
 
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  common.Response{StatusCode: 0},

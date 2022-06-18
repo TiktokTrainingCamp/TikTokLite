@@ -74,11 +74,6 @@ func ValidateToken(token string) (int, bool) {
 		fmt.Println("token已过期")
 		return 0, false
 	}
-	// 更新token
-	err = redis.SetToken(token, userId)
-	if err != nil {
-		return 0, false
-	}
 	return userId, true
 }
 

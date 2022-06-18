@@ -41,6 +41,7 @@ func SetToken(token string, userId int) (err error) {
 	return nil
 }
 
+// GetToken 获取token，如果成功则更新token
 func GetToken(token string) (userId int, err error) {
 	if dao.DEBUG {
 		fmt.Println("redis.GetToken")
