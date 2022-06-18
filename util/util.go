@@ -14,25 +14,23 @@ import (
 )
 
 // GeneratePreview 生成预览封面
-func GeneratePreview(videoName string) (string, error) {
+func GeneratePreview(videoName string, imageName string) (err error) {
 	path := "public/"
-	suffix := ".jpg"
 	input := path + videoName
-	pictureName := strings.Split(videoName, ".")[0] + suffix
-	output := path + pictureName
+	output := path + imageName
 	cmdArguments := []string{"-i", input, "-t", "1", "-r", "1", "-q:v", "2", "-f", "image2", output}
 
 	cmd := exec.Command("ffmpeg", cmdArguments...)
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
-	err := cmd.Run()
+	err = cmd.Run()
 	if err != nil {
 		//log.Fatal(err)
-		return "", err
+		return err
 	}
 	fmt.Printf("command output: %q", out.String())
-	return pictureName, nil
+	return nil
 }
 
 //func AesEncrypt(plainText, iv, key []byte) ([]byte, error) {
@@ -140,7 +138,7 @@ func ParseToken(token string, keyString string) (string, bool) {
 	}
 	plain, err := aesDecrypt(data, key)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("token解析失败")
 		return err.Error(), false
 	}
 	plainText := fmt.Sprintf("%s", plain)
