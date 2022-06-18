@@ -41,19 +41,19 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList 获取点赞列表
 func FavoriteList(c *gin.Context) {
-	//token := c.Query("token")
+	token := c.Query("token")
 	// 验证token
-	//_, success := service.ValidateToken(token)
-	//if !success {
-	//	c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "Token expired, please login again"})
-	//	return
-	//}
-	userId, err := strconv.Atoi(c.Query("user_id"))
+	userId, success := service.ValidateToken(token)
+	if !success {
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "Token expired, please login again"})
+		return
+	}
+	targetUserId, err := strconv.Atoi(c.Query("user_id"))
 	if err != nil { // 解析user_id失败
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "user_id parse failed"})
 		return
 	}
-	videoList := service.GetFavoriteVideoListById(userId)
+	videoList := service.GetFavoriteVideoListById(targetUserId, userId)
 
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response:  common.Response{StatusCode: 0},

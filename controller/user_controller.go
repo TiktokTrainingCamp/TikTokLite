@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"tiktok-lite/common"
 	"tiktok-lite/service"
 )
@@ -73,7 +74,15 @@ func UserInfo(c *gin.Context) {
 		})
 		return
 	}
-	if user, success := service.GetUserInfoById(userId, userId); success {
+
+	targetUserId, err := strconv.Atoi(c.Query("user_id"))
+	if err != nil {
+		c.JSON(http.StatusOK, UserResponse{
+			Response: common.Response{StatusCode: 1, StatusMsg: "user_id parse failed"},
+		})
+		return
+	}
+	if user, success := service.GetUserInfoById(targetUserId, userId); success {
 		fmt.Printf("获取用户信息：%#v\n", user)
 		c.JSON(http.StatusOK, UserResponse{
 			Response: common.Response{StatusCode: 0},

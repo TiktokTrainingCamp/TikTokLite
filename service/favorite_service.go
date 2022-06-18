@@ -37,15 +37,15 @@ func UserUnlikeVideo(userId int, videoId int) bool {
 }
 
 // GetFavoriteVideoListById 获取用户的点赞列表
-func GetFavoriteVideoListById(userId int) []common.Video {
+func GetFavoriteVideoListById(TargetUserId int, userId int) []common.Video {
 	if DEBUG {
 		fmt.Println("service.UserUnlikeVideo")
 	}
 
-	videos := dao.GetFavoriteVideoList(userId)
+	videos := dao.GetFavoriteVideoList(TargetUserId)
 	videoList := convertVideoList(videos, userId)
 	if DEBUG {
-		fmt.Printf("用户%d喜爱列表 数量:%d\n", userId, len(videoList))
+		fmt.Printf("用户%d喜爱列表 数量:%d\n", TargetUserId, len(videoList))
 	}
 	if dao.DEBUG {
 		fmt.Printf("视频详细信息：%v\n", videoList)
