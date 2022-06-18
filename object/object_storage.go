@@ -13,7 +13,7 @@ var (
 	videoBucket = "https://tiktok-video-1305174939.cos.ap-guangzhou.myqcloud.com/"
 	SECRETID    = "AKIDc4GCDyTheKjriJhoeDWYJn1ye3A0Zsuf"
 	SECRETKEY   = "VjgMltlMgjVzC8nBH6evve6Ho44nGSN1"
-	filePath    = "../public/"
+	filePath    = "E:/golang/tiktok-lite/public/"
 )
 
 func getCos(bucketUrl string) *cos.Client {
@@ -92,8 +92,8 @@ func logStatus(err error) {
 //	_, err = c.Object.PutFromFile(context.Background(), name, "./test", opt)
 //}
 
-// uploadImgFile 上传图片到cos服务
-func uploadImgFile(fileName string) (url string, err error) {
+// UploadImgFile 上传图片到cos服务
+func UploadImgFile(fileName string) (url string, err error) {
 	c := getCos(imageBucket)
 
 	// 通过本地文件上传对象
@@ -105,8 +105,8 @@ func uploadImgFile(fileName string) (url string, err error) {
 	return imageBucket + fileName, nil
 }
 
-// uploadImgFile 上传视频到cos服务
-func uploadVideoFile(fileName string) (url string, err error) {
+// UploadVideoFile 上传视频到cos服务
+func UploadVideoFile(fileName string) (url string, err error) {
 	c := getCos(videoBucket)
 	// 通过本地文件上传对象
 	_, err = c.Object.PutFromFile(context.Background(), fileName, filePath+fileName, nil)
