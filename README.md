@@ -138,6 +138,7 @@ token是唯一并带含有userId和创建时间的一串加密字符，用于用
 ### 单元测试
 
 对底层功能进行了单元测试以及覆盖率测试，没覆盖的部分基本都是一些没法稳定触发的异常处理，各单测的覆盖率如下图所示。
+
 ![dao_test](public/dao_test.png)
 ![img.png](public/redis_test.png)
 ![img.png](public/cos_test.png)
