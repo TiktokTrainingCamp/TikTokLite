@@ -1,0 +1,507 @@
+{
+	"info": {
+		"_postman_id": "8274a89b-0c8c-4674-a90b-1a5130341314",
+		"name": "TikTokLite",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "基础功能",
+			"item": [
+				{
+					"name": "投稿接口",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data",
+									"type": "file",
+									"src": "/C:/Users/ColorofNight/Documents/MuMu共享文件夹/neko.mp4"
+								},
+								{
+									"key": "token",
+									"value": "Vxq6xuUh79iSh+623omgag==",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "是可爱的猫猫~",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/douyin/publish/action/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"publish",
+								"action",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "视频流接口未登录",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/feed/?latest_time=1655539636000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"feed",
+								""
+							],
+							"query": [
+								{
+									"key": "latest_time",
+									"value": "1655539636000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "用户注册",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/douyin/user/register/?username=test&password=123456",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"user",
+								"register",
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "test"
+								},
+								{
+									"key": "password",
+									"value": "123456"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "用户登录",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/user/login/?username=admin&password=123456",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"user",
+								"login",
+								""
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "admin"
+								},
+								{
+									"key": "password",
+									"value": "123456"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "用户信息",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/user/?user_id=asd&token=tAvcgUnJM3ttg5tDjqN8kw==",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"user",
+								""
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "asd"
+								},
+								{
+									"key": "token",
+									"value": "tAvcgUnJM3ttg5tDjqN8kw=="
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "发布列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/publish/list/?token=tAvcgUnJM3ttg5tDjqN8kw==&user_id=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"publish",
+								"list",
+								""
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "tAvcgUnJM3ttg5tDjqN8kw=="
+								},
+								{
+									"key": "user_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "视频流接口登录状态",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/feed/?latest_time=&token=t4CBtwq3XZJ35kERr5QUXw==",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"feed",
+								""
+							],
+							"query": [
+								{
+									"key": "latest_time",
+									"value": ""
+								},
+								{
+									"key": "token",
+									"value": "t4CBtwq3XZJ35kERr5QUXw=="
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "扩展接口-I",
+			"item": [
+				{
+					"name": "赞操作",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/favorite/action/?token=tAvcgUnJM3ttg5tDjqN8kw==&video_id=-1&action_type=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"favorite",
+								"action",
+								""
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "tAvcgUnJM3ttg5tDjqN8kw=="
+								},
+								{
+									"key": "video_id",
+									"value": "-1"
+								},
+								{
+									"key": "action_type",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "点赞列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/favorite/list/?token=7LEltOYjGB4rKyhaPnjUFg==&user_id=",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"favorite",
+								"list",
+								""
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "7LEltOYjGB4rKyhaPnjUFg=="
+								},
+								{
+									"key": "user_id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "评论操作",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/comment/action/?token=8JllW9NQUq5PXGWiZYQHjA==&video_id=33&action_type=1&comment_text=真的好可爱啊&comment_id=15",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"comment",
+								"action",
+								""
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "8JllW9NQUq5PXGWiZYQHjA=="
+								},
+								{
+									"key": "video_id",
+									"value": "33"
+								},
+								{
+									"key": "action_type",
+									"value": "1"
+								},
+								{
+									"key": "comment_text",
+									"value": "真的好可爱啊"
+								},
+								{
+									"key": "comment_id",
+									"value": "15"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "评论列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/comment/list/?token=7LEltOYjGB4rKyhaPnjUFg==&video_id=33",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"comment",
+								"list",
+								""
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "7LEltOYjGB4rKyhaPnjUFg=="
+								},
+								{
+									"key": "video_id",
+									"value": "33"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "扩展接口-II",
+			"item": [
+				{
+					"name": "关注操作",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/relation/action/?token=7LEltOYjGB4rKyhaPnjUFg==&to_user_id=8&action_type=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"relation",
+								"action",
+								""
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "7LEltOYjGB4rKyhaPnjUFg=="
+								},
+								{
+									"key": "to_user_id",
+									"value": "8"
+								},
+								{
+									"key": "action_type",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "关注列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/relation/follow/list/?token=7LEltOYjGB4rKyhaPnjUFg==&user_id=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"relation",
+								"follow",
+								"list",
+								""
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "7LEltOYjGB4rKyhaPnjUFg=="
+								},
+								{
+									"key": "user_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "粉丝列表",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/douyin/relation/follower/list/?user_id=2&token=7LEltOYjGB4rKyhaPnjUFg==",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"douyin",
+								"relation",
+								"follower",
+								"list",
+								""
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "2"
+								},
+								{
+									"key": "token",
+									"value": "7LEltOYjGB4rKyhaPnjUFg=="
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

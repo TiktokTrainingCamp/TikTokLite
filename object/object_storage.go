@@ -46,10 +46,7 @@ func logStatus(err error) {
 		// WARN
 		fmt.Println("WARN: Resource is not existed")
 	} else if e, ok := cos.IsCOSError(err); ok {
-		fmt.Printf("ERROR: Code: %v\n", e.Code)
-		fmt.Printf("ERROR: Message: %v\n", e.Message)
-		fmt.Printf("ERROR: Resource: %v\n", e.Resource)
-		fmt.Printf("ERROR: RequestId: %v\n", e.RequestID)
+		fmt.Printf("ERROR: Code: %v\nERROR: Message: %v\nERROR: Resource: %v\nERROR: RequestId: %v\n", e.Code, e.Message, e.Resource, e.RequestID)
 		// ERROR
 	} else {
 		fmt.Printf("ERROR: %v\n", err)

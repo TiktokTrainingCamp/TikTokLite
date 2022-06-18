@@ -53,26 +53,26 @@ func UnFollowUser(userId int, followId int) bool {
 }
 
 // GetFollowListById 获取用户的关注列表
-func GetFollowListById(userId int) []common.User {
+func GetFollowListById(targetUserId int, userId int) []common.User {
 	if DEBUG {
 		fmt.Println("service.GetFollowListById")
 	}
 
 	// 获取用户关注列表
-	users := dao.GetFollowListById(userId)
+	users := dao.GetFollowListById(targetUserId)
 	// 转换格式
 	userList := convertUserList(users, userId)
 	return userList
 }
 
 // GetFollowerListById 获取用户的粉丝列表
-func GetFollowerListById(userId int) []common.User {
+func GetFollowerListById(targetUserId int, userId int) []common.User {
 	if DEBUG {
 		fmt.Println("service.GetFollowerListById")
 	}
 
 	// 获取用户粉丝列表
-	users := dao.GetFollowerListById(userId)
+	users := dao.GetFollowerListById(targetUserId)
 	// 转换格式
 	userList := convertUserList(users, userId)
 	return userList

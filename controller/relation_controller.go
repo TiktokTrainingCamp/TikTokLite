@@ -55,8 +55,14 @@ func FollowList(c *gin.Context) {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "Token expired, please login again"})
 		return
 	}
+	// 获取user_id
+	targetUserId, err := strconv.Atoi(c.Query("user_id"))
+	if err != nil { // 解析user_id失败
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "user_id parse failed"})
+		return
+	}
 	// 获取关注列表
-	userList := service.GetFollowListById(userId)
+	userList := service.GetFollowListById(targetUserId, userId)
 
 	c.JSON(http.StatusOK, UserListResponse{
 		Response: common.Response{StatusCode: 0},
@@ -73,8 +79,14 @@ func FollowerList(c *gin.Context) {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "Token expired, please login again"})
 		return
 	}
+	// 获取user_id
+	targetUserId, err := strconv.Atoi(c.Query("user_id"))
+	if err != nil { // 解析user_id失败
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "user_id parse failed"})
+		return
+	}
 	// 获取粉丝列表
-	userList := service.GetFollowerListById(userId)
+	userList := service.GetFollowerListById(targetUserId, userId)
 
 	c.JSON(http.StatusOK, UserListResponse{
 		Response: common.Response{StatusCode: 0},

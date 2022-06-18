@@ -15,7 +15,7 @@ type CommentListResponse struct {
 
 type CommentActionResponse struct {
 	common.Response
-	Comment common.Comment `json:"common,omitempty"`
+	Comment common.Comment `json:"comment,omitempty"`
 }
 
 // CommentAction 评论/删除评论
@@ -25,6 +25,7 @@ func CommentAction(c *gin.Context) {
 		c.JSON(http.StatusOK, CommentActionResponse{
 			Response: common.Response{StatusCode: 1, StatusMsg: "video_id parse failed"},
 		})
+		return
 	}
 
 	token := c.Query("token")
@@ -92,14 +93,14 @@ func CommentList(c *gin.Context) {
 		return
 	}
 	token := c.Query("token")
-	// 不需要验证token，只需获取userId，无token时userId为0
-	userId, _ := service.ValidateToken(token)
-	//if !success {
-	//	c.JSON(http.StatusOK, CommentActionResponse{
-	//		Response: common.Response{StatusCode: 1, StatusMsg: "Token expired, please login again"},
-	//	})
-	//	return
-	//}
+	// 验证token
+	userId, success := service.ValidateToken(token)
+	if !success {
+		c.JSON(http.StatusOK, CommentActionResponse{
+			Response: common.Response{StatusCode: 1, StatusMsg: "Token expired, please login again"},
+		})
+		return
+	}
 
 	commentList := service.GetCommentListById(videoId, userId)
 	c.JSON(http.StatusOK, CommentListResponse{
