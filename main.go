@@ -9,6 +9,7 @@ import (
 	"tiktok-lite/dao"
 	"tiktok-lite/redis"
 	"tiktok-lite/service"
+	"time"
 )
 
 // GetOutBoundIP 获取服务器运行ip
@@ -30,12 +31,13 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("server is running on %s\n:8080", ip)
+	fmt.Printf("server is running on http://%s:8080\n", ip)
 	controller.IP = ip + ":8080"
 
 	// 调试信息控制
 	service.DEBUG = true
 	dao.DEBUG = false
+	redis.ExpireTime = time.Minute * 10
 
 	// 连接mysql数据库
 	err = dao.ConnectDB()
