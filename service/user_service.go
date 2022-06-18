@@ -61,9 +61,11 @@ func ValidateToken(token string) (int, bool) {
 		success bool
 	)
 	// 解析token
+	if token == "" {
+		return userId, false
+	}
 	_, success = util.ParseToken(token, key)
 	if !success {
-		fmt.Println("token解析失败")
 		return 0, false
 	}
 	// 查询token
