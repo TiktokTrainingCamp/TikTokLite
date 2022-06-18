@@ -46,7 +46,7 @@ func FindUser(username string) bool {
 //	return userInfo.UserId
 //}
 
-// GetPasswordByUsername 获取用户存储密码
+// GetPasswordByUsername 获取用户存储的密码
 func GetPasswordByUsername(username string) (int, string) {
 	if DEBUG {
 		fmt.Println("dao.GetPasswordByUsername")
@@ -71,6 +71,19 @@ func AddUser(name string, username string, password string) int {
 		return 0
 	}
 	return user.UserId
+}
+
+// removeUser 删除指定用户
+func removeUser(userName string) bool {
+	if DEBUG {
+		fmt.Println("dao.removeUser")
+	}
+	result := db.Where("username = ?", userName).Delete(&User{})
+	if result.Error != nil {
+		fmt.Println("dao.removeUser", result.Error)
+		return false
+	}
+	return true
 }
 
 // GetUserInfo 获取用户信息
@@ -360,7 +373,7 @@ func GetCommentCountByVideoId(videoId int) int64 {
 		fmt.Println("dao.GetCommentCountByVideoId")
 	}
 	var count int64
-	result := db.Model(&Comment{}).Where(&Comment{VideoId: videoId}).Count(&count)
+	result := db.Model(&Comment{}).Where(map[string]interface{}{"video_id": videoId}).Find(&Comment{}).Count(&count)
 	if result.Error != nil {
 		fmt.Println("dao.GetCommentCountByVideoId", result.Error)
 	}
@@ -419,13 +432,13 @@ func GetFollowCount(userId int) int64 {
 	return count
 }
 
-// GetFollowerCount 查询关注数
+// GetFollowerCount 查询粉丝数
 func GetFollowerCount(userId int) int64 {
 	if DEBUG {
 		fmt.Println("dao.GetFollowerCount")
 	}
 	var count int64
-	result := db.Model(&Relation{}).Where(&Relation{FollowId: userId}).Count(&count)
+	result := db.Model(&Relation{}).Where(map[string]interface{}{"follow_id": userId}).Find(&Relation{}).Count(&count)
 	if result.Error != nil {
 		fmt.Println("dao.GetFollowerCount", result.Error)
 	}
