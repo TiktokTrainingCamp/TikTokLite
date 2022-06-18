@@ -3,11 +3,13 @@ package redis
 import (
 	"fmt"
 	"testing"
+	"tiktok-lite/dao"
 	"time"
 )
 
 func TestRedis(t *testing.T) {
-	expireTime = 10 * time.Second
+	ExpireTime = 5 * time.Second
+	dao.DEBUG = true
 
 	err := InitRedisClient()
 	if err != nil {
@@ -19,9 +21,17 @@ func TestRedis(t *testing.T) {
 		error.Error(err)
 	}
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	userId, err := GetToken("user123")
+	if err != nil {
+		error.Error(err)
+	}
+	fmt.Printf("userId: %d\n", userId)
+
+	time.Sleep(3 * time.Second)
+
+	userId, err = GetToken("user123")
 	if err != nil {
 		error.Error(err)
 	}
@@ -35,11 +45,9 @@ func TestRedis(t *testing.T) {
 	}
 	fmt.Printf("userId: %d\n", userId)
 
-	time.Sleep(11 * time.Second)
-
-	userId, err = GetToken("user123")
+	rdb.Set("123", "asd", 0)
+	userId, err = GetToken("123")
 	if err != nil {
-		error.Error(err)
+		fmt.Println(err)
 	}
-	fmt.Printf("userId: %d\n", userId)
 }
