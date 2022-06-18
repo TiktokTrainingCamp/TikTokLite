@@ -23,8 +23,25 @@ go build && ./tiktok-lite
 
 ### 3 数据库
 
-mysql导入[sql语句](sql/tiktok.sql)并配置端口为localhost:3306。
+#### mysql
+导入[sql文件](sql/tiktok.sql)并配置端口为localhost:3306。
 
+#### redis
+``` go
+rdb = redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379", //Redis服务监听的端口号
+		Password: "12345",
+		DB:       0, //选择0-15号redis数据库，
+		PoolSize: 100,
+	})
+```
+
+#### COS
+腾讯云对象存储 密钥已隐藏，如有需要，请联系colorofnight86@qq.com。
+``` go
+var imageBucket = "https://tiktok-img-1305174939.cos.ap-guangzhou.myqcloud.com/"
+var videoBucket = "https://tiktok-video-1305174939.cos.ap-guangzhou.myqcloud.com/"
+```
 ## 数据库设计/Dao
 
 ### 1 E-R图
@@ -75,7 +92,7 @@ all表示全表扫描，性能最差，可以通过增加索引来优化，一�
 
 注册时验证用户名是否重复，并加密存储用户的密码，登录时验证用户名和密码，两个操作成功后均返回加密的token。
 
-### 2 Token
+### 2 鉴权
 
 token是唯一并带含有userId和创建时间的一串加密字符，用于用户验证。使用redis存储，失效时间为10分钟，失效时间过后验证会失败。
 
@@ -85,7 +102,7 @@ token是唯一并带含有userId和创建时间的一串加密字符，用于用
 
 ### 3 视频投稿
 
-投稿的视频会被保存在服务器下的public文件中，并调用ffmpeg截取第一帧作为视频封面，然后将视频和封面的地址与当期服务器运行ip拼接，作为url存入数据库。
+投稿的视频会被保存在服务器下的public文件中，并调用ffmpeg截取第一帧作为视频封面，然后将视频和封面上传云存储服务，将其url存入数据库。
 
 ### 4 视频流服务
 
@@ -95,11 +112,11 @@ token是唯一并带含有userId和创建时间的一串加密字符，用于用
 
 ### 5 点赞功能
 
-点赞时查询是否存在点赞，然后进行点赞操作。
+点赞时查询是否存在点赞，然后进行点赞/取消点赞操作，避免重复操作。
 
 ### 6 关注功能
 
-点关注/取消关注时查询关注状态，然后进行关注操作。
+点关注/取消关注时查询关注状态，然后进行关注/取关操作，避免重复操作。
 
 ## 性能和安全
 
@@ -107,13 +124,13 @@ token是唯一并带含有userId和创建时间的一串加密字符，用于用
 
 * 通过建立数据库索引，减少数据库查询的开销。
   详情见[sql优化](#3-sql优化)。
-* 使用redis对token进行缓存，并有限
+* 使用redis对token进行缓存，并在查询redis之前对token进行解析验证。
 
 ### 2 sql注入
 
 使用Gorm框架，条件语句使用带'?'占位符的where转义写法，使用该写法时Gorm会采取预编译，进而防止sql注入。
 
-其具体过程为
+其具体过程为：
 
 1. 客户端发起Prepare命令将带“?”参数占位符的SQL语句发送到数据库,成功后返回stmtID。
 2. 具体执行SQL时,客户端使用之前返回的stmtID,并带上请求参数发起Execute命令来执行SQL。
