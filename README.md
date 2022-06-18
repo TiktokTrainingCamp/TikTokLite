@@ -182,8 +182,8 @@ ps:这里的无效token可以是错的token，也可以是过期的token
 | publish/action/ | 正常视频，标题信息和有效token      | 成功并可以在投稿列表里看到   | 正确                      |
 | publish/action/ | 正常视频，标题信息和有效token，重复上传 | 正常上传            | 正确                      |
 | publish/action/ | 正常视频，标题信息和有效token      | 提示上传出现问题        | 由于属于偶发情况，通过打桩，会输出实际错误信息 |
-| publish/action/ | 无效token                | 提示token失效，请重新登录 ||
-| publish/action/ | 无标题                    | 正常上传但上传的视频没标题   ||
+| publish/action/ | 无效token                | 提示token失效，请重新登录 | 正确                      |
+| publish/action/ | 无标题                    | 正常上传但上传的视频没标题   | 正确                      |
 
 | 发布列表          | 参数/输入             | 预期输出            | 实际输出     |
 |---------------|-------------------|-----------------|----------|
@@ -194,15 +194,15 @@ ps:这里的无效token可以是错的token，也可以是过期的token
 
 #### 扩展接口I
 
-| 赞操作              | 参数/输入                                    | 预期输出            | 实际输出                |
-|------------------|------------------------------------------|-----------------|---------------------|
-| favorite/action/ | 有效video_id，有效token，没点赞的情况下点赞             | 成功并出现在点赞列表中     | 正确                  |
-| favorite/action/ | 有效video_id，失效token，点赞/取消点赞               | 提示token失效，请重新登录 | 正确                  |
-| favorite/action/ | 非法video_id，有效token，点赞/取消点赞               | 提示video_id解析失败  | 正确                  |
-| favorite/action/ | 无效video_id，有效token，点赞/取消点赞               | 提示非法操作          | 无提示，实际上往数据库中加入了这一纪录 |
-| favorite/action/ | 有效video_id，有效token，点过赞的情况下点赞或没点赞的情况下取消点赞 | 点赞列表中无变化        | 正确                  |
-| favorite/action/ | 有效video_id，有效token，点过赞的情况下取消点赞           | 点赞列表减少          | 正确                  |
-| favorite/action/ | 有效video_id，有效token，非法action_type         | 无任何变化           | 正确，实际上除了1之外都是取消点赞   |
+| 赞操作              | 参数/输入                                    | 预期输出            | 实际输出                          |
+|------------------|------------------------------------------|-----------------|-------------------------------|
+| favorite/action/ | 有效video_id，有效token，没点赞的情况下点赞             | 成功并出现在点赞列表中     | 正确                            |
+| favorite/action/ | 有效video_id，失效token，点赞/取消点赞               | 提示token失效，请重新登录 | 正确                            |
+| favorite/action/ | 非法video_id，有效token，点赞/取消点赞               | 提示video_id解析失败  | 正确                            |
+| favorite/action/ | 无效video_id，有效token，点赞/取消点赞               | 提示非法操作          | 无提示，实际上往数据库中加入了这一纪录           |
+| favorite/action/ | 有效video_id，有效token，点过赞的情况下点赞或没点赞的情况下取消点赞 | 点赞列表中无变化        | 正确                            |
+| favorite/action/ | 有效video_id，有效token，点过赞的情况下取消点赞           | 点赞列表减少          | 正确                            |
+| favorite/action/ | 有效video_id，有效token，非法action_type         | 无任何变化           | 正确，实际上除了action_type=1之外都是取消点赞 |
 
 | 点赞列表           | 参数/输入             | 预期输出            | 实际输出    |
 |----------------|-------------------|-----------------|---------|
@@ -221,11 +221,11 @@ ps:这里的无效token可以是错的token，也可以是过期的token
 | comment/action/ | 有效video_id，有效token，删除他人的评论 | 提示失败或无权限        | 正确，提示无权限删除  |
 | comment/action/ | 有效token，无效video_id或token   | 无提示并可以继续与后端通信   | 正确，提示无权限删除  |
 
-| 评论列表          | 参数/输入        | 预期输出            | 实际输出 |
+| 评论列表          | 参数/输入              | 预期输出            | 实际输出 |
 |---------------|--------------------|-----------------|------|
 | comment/list/ | 有效video_id，有效token | 返回评论列表（可能为空）    | 正确   |
 | comment/list/ | 有效video_id，失效token | 提示token失效，请重新登录 | 正确   |
-| comment/list/ | 非法video_id，有效token | 提示video_id解析失败  ||
+| comment/list/ | 非法video_id，有效token | 提示video_id解析失败  | 正确   |
 | comment/list/ | 无效video_id，有效token | 提示视频不存在或者返回空列表  | 正确   |
 
 #### 扩展接口II
