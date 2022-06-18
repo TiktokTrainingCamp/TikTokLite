@@ -44,5 +44,11 @@ func GetFavoriteVideoListById(userId int) []common.Video {
 
 	videos := dao.GetFavoriteVideoList(userId)
 	videoList := convertVideoList(videos, userId)
+	if DEBUG {
+		fmt.Printf("用户%d喜爱列表 数量:%d\n", userId, len(videoList))
+	}
+	if dao.DEBUG {
+		fmt.Printf("视频详细信息：%v\n", videoList)
+	}
 	return videoList
 }
