@@ -11,8 +11,6 @@ import (
 var (
 	imageBucket = "https://tiktok-img-1305174939.cos.ap-guangzhou.myqcloud.com/"
 	videoBucket = "https://tiktok-video-1305174939.cos.ap-guangzhou.myqcloud.com/"
-	SECRETID    = "AKIDc4GCDyTheKjriJhoeDWYJn1ye3A0Zsuf"
-	SECRETKEY   = "VjgMltlMgjVzC8nBH6evve6Ho44nGSN1"
 	filePath    = "E:/golang/tiktok-lite/public/"
 )
 
