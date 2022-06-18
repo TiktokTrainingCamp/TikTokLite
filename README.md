@@ -23,7 +23,7 @@ go build && ./tiktok-lite
 
 ### 3 数据库
 
-mysql导入[sql语句](sql/tiktok_index.sql)并配置端口为localhost:3306。
+mysql导入[sql语句](sql/tiktok.sql)并配置端口为localhost:3306。
 
 ## 数据库设计/Dao
 
