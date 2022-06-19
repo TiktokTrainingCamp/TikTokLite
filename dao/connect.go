@@ -73,6 +73,42 @@ func AddUser(name string, username string, password string) int {
 	return user.UserId
 }
 
+// Add2User 添加用户
+func Add2User(name string) int {
+	if DEBUG {
+		fmt.Println("dao.AddUser")
+	}
+	tx := db.Begin() // 事务开始
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("回滚")
+			tx.Rollback()
+		}
+	}()
+
+	var user = User{Name: name, Username: "", Password: ""}
+	result := db.Create(&user)
+	if result.Error != nil {
+		fmt.Println("dao.AddUser", result.Error)
+		tx.Rollback() // 事务回滚
+		fmt.Println("回滚1")
+		return 0
+	}
+
+	user = User{Name: name + name, Username: "", Password: ""}
+	result = db.Create(&user)
+	if result.Error != nil {
+		fmt.Println("dao.AddUser", result.Error)
+		tx.Rollback() // 事务回滚
+		fmt.Println("回滚2")
+		return 0
+	}
+	// 提交事务
+	tx.Commit()
+
+	return 1
+}
+
 // removeUser 删除指定用户
 func removeUser(userName string) bool {
 	if DEBUG {

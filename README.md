@@ -62,6 +62,10 @@ var videoBucket = "https://tiktok-video-1305174939.cos.ap-guangzhou.myqcloud.com
 all表示全表扫描，性能最差，可以通过增加索引来优化，一般优化到range就可以了。
 经过添加索引，所有查询语句均优化至range以上。
 
+### 4 事务
+启用事务，当事务中的每个数据库操作出错时，会回滚，只有所有操作都正确时，才会提交事务，保证数据库的一致性。
+![事务](public/transaction.png)
+
 ## 接口说明/Controller
 
 ### 1 基础接口

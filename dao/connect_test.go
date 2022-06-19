@@ -26,6 +26,9 @@ func TestConnect(t *testing.T) {
 	fmt.Println("创建用户的id为：", AddUser("testtest", "testtest", "123456"))
 	fmt.Println("重复用户创建：", 0 == AddUser("testtest", "testtest", "123456"))
 
+	// 事务回滚测试
+	fmt.Println("重复用户创建：", 1 == Add2User("testtesttesttesttesttesttesttesttest"))
+
 	user, _ := GetUserInfo(1)
 	fmt.Println("获取用户信息：", user)
 
